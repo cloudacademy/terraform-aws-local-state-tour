@@ -49,7 +49,7 @@
     {
       "file": "ec2/terraform.tfstate",
       "description": "A key field to note in the state file is the `dependencies` list associated with certain resources. This list depicts what resources must exist before the current resource is created. \n\nIn this example, the EC2 instance must wait until the `aws_vpc` and `aws_subnet` resources have been created.",
-      "line": 136,
+      "line": 167,
       "title": "Dependencies"
     },
     {
