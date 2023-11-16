@@ -15,7 +15,7 @@
     },
     {
       "directory": "ec2",
-      "description": "Click the following command to open a terminal window, change into the working directory, and run the Terraform `apply` command:\n\n>> cd ec2 && terraform init && terraform apply --auto-approve\n\nThe resources will take 2 minutes to deploy. A **terraform.tfstate** file will be created within the **ec2** directory. You will explore this file next.",
+      "description": "Click the following command to open a terminal window, change into the working directory, and run the Terraform `apply` command:\n\n>> cd ec2 && terraform init && terraform apply --auto-approve\n\nThe resources will take 2 minutes to deploy. A **terraform.tfstate** file will be created within the **ec2** directory. You will explore this file next.\n\n***Important***: Wait for the deployment to complete before continuing.",
       "title": "Init & Apply"
     },
     {
@@ -94,7 +94,7 @@
     },
     {
       "directory": "ec2",
-      "description": "Run the following `terraform plan` command:\n\n>> terraform plan\n\nThe plan outputs the plan to add 3 resources.\n\nWith the state file deleted, Terraform assumes the resources defined in **main.tf** do not exist. However, you simply deleted the state file, not the resources. You can use the **terraform.tfstate.backup** file to recover the previous state of your project. ",
+      "description": "Run the following `terraform plan` command:\n\n>> terraform plan\n\nThe command outputs the plan to add 3 resources.\n\nWith the state file deleted, Terraform assumes the resources defined in **main.tf** do not exist. However, you simply deleted the state file, not the resources. You can use the **terraform.tfstate.backup** file to recover the previous state of your project. ",
       "title": "Plan #1"
     },
     {
@@ -114,7 +114,7 @@
     },
     {
       "file": "ec2/terraform.tfstate",
-      "description": "No actual resources have been updated as a result of the refresh, and the `instance_type` value for the EC2 Instance now matches the actual `t3.micro` value.",
+      "description": "No actual resources have been updated as a result of the refresh, and the `instance_type` value for the EC2 Instance once again matches the actual `t3.micro` value.",
       "line": 61,
       "title": "Recovered State"
     },
