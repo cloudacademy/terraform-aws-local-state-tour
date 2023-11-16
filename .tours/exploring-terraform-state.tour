@@ -1,0 +1,127 @@
+{
+  "$schema": "https://aka.ms/codetour-schema",
+  "title": "Exploring Terraform State",
+  "steps": [
+    {
+      "directory": "ec2",
+      "description": "The **ec2** directory you will be working with consists of the following files:\n\n- **main.tf**: Terraform provider and resource definitions. This file will contain the Amazon VPC, Subnet, and EC2 instance resource configurations.\n- **variables.tf**: The variables used to configure resources in the **main.tf** are defined here. Variables are declared with types, descriptions, and optional default values.\n- **terraform.tfvars**: This config file is where you will define values for your Terraform variables.\n\nThe goal of this lab is to explore the local Terraform state file as it gets created, updated, and deleted. You will only need to make updates to the **terraform.tfvars** file in this lab step. \n\nFeel free to explore the three files mentioned above. To return to the tour, locate this step in the **CODETOUR** panel in the bottom-left section of the IDE.\n\nClick **Next** below to continue.",
+      "title": "File Overview"
+    },
+    {
+      "file": "ec2/main.tf",
+      "description": "The following resources are defined in the Terraform configuration:\n\n- **Amazon VPC**\n- **Amazon VPC Subnet**\n- **Amazon EC2 Instance**\n\n*Note*: The Terraform state file will depict the automatically created resources to support the above cloud resources. Local state provides a look at what configuration looks like under the hood during a Terraform deployment.",
+      "line": 11,
+      "title": "Resources"
+    },
+    {
+      "directory": "ec2",
+      "description": "Click the following command to open a terminal window, change into the working directory, and run the Terraform `apply` command:\n\n>> cd ec2 && terraform init && terraform apply --auto-approve\n\nThe resources will take 2 minutes to deploy. A **terraform.tfstate** file will be created within the **ec2** directory. You will explore this file next.",
+      "title": "Init & Apply"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "**terraform.tfstate** is a JSON file that contains the resources that were deployed into AWS. These resources are defined within the `resources` list beginning on line **7**.",
+      "line": 1,
+      "selection": {
+        "start": {
+          "line": 1,
+          "character": 1
+        },
+        "end": {
+          "line": 7,
+          "character": 3
+        }
+      },
+      "title": "State"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "You can see that the state file is mapping the `server` resource that was specified in the **main.tf** file with its generated AWS ARN identifier on line *18*.",
+      "line": 11,
+      "title": "EC2 Instance"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "The `instance_type` property of the EC2 instance is set to `t2.micro`. This value is defined as a default in the `variables.tf` file. You will override this value in a future step.\n\nThe state file also pulls down the additional attributes of the EC2 instance like \n`cpu_core_count`, `private_ip`, and `instance_state`.",
+      "line": 61,
+      "title": "Resource Attributes"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "A key field to note in the state file is the `dependencies` list associated with certain resources. This list depicts what resources must exist before the current resource is created. \n\nIn this example, the EC2 instance must wait until the `aws_vpc` and `aws_subnet` resources have been created.",
+      "line": 136,
+      "title": "Dependencies"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "The state file can also contain sensitive information, which is why it is important to never store the **terraform.tfstate** file in a public git repository or S3 bucket. Ensure that restrictive access is in place.",
+      "line": 82,
+      "title": "Sensitive Data"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "**Important**: Certain situations may warrant a manual update to the **terraform.tfstate** file, however, it is considered dangerous to do so. Modifying the state file directly could corrupt the configuration as the state file can drift from the actual state of the resources in AWS. ",
+      "line": 1,
+      "title": "Modifying State"
+    },
+    {
+      "file": "ec2/terraform.tfvars",
+      "description": "Insert the following value for the `instance_size` variable to override the default value:\n\n```js\ninstance_type = \"t3.micro\"\n```\n\nYou will apply this resource configuration update and observe the changes in the **terraform.tfstate** file.",
+      "line": 12,
+      "title": "Update instance_type"
+    },
+    {
+      "directory": "ec2",
+      "description": "Run the `terraform apply --auto-approve` command in the terminal once more to implement your changes.",
+      "title": "Apply #1"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "After the changes have been deployed, you will notice the modified value in this **terraform.tfstate** file.",
+      "line": 61,
+      "title": "Updated instance_type"
+    },
+    {
+      "file": "ec2/terraform.tfstate.backup",
+      "description": "As a result of the second deployment, a **terraform.tfstate.backup** file has been created for you. \n\nIf you scroll down to the `instance_type` property of the EC2 instance, you will notice the previous `t2.micro` type is used. \n\nTerraform automatically creates a backup state file *before* applying changes to the resources and their state. This ensures that developers can revert to previously working states or recover from a corrupted or lost state file.",
+      "line": 1,
+      "title": "State Backup"
+    },
+    {
+      "directory": "ec2",
+      "description": "To better understand the importance of the state file, click to run the following command in the terminal window to delete the **terraform.tfstate** file:\n\n>> rm terraform.tfstate",
+      "title": "Delete terraform.tfstate"
+    },
+    {
+      "directory": "ec2",
+      "description": "Run the following `terraform plan` command:\n\n>> terraform plan\n\nThe plan outputs the plan to add 3 resources.\n\nWith the state file deleted, Terraform assumes the resources defined in **main.tf** do not exist. However, you simply deleted the state file, not the resources. You can use the **terraform.tfstate.backup** file to recover the previous state of your project. ",
+      "title": "Plan #1"
+    },
+    {
+      "directory": "ec2",
+      "description": "Run the following command in the terminal to copy the backup file contents over to a replacement **terraform.tfstate** file:\n\n>> cp terraform.tfstate.backup terraform.tfstate",
+      "title": "Restore Backup"
+    },
+    {
+      "directory": "ec2",
+      "description": "Run the `terraform plan` command again and observe the output.\n\nSince the original **terraform.tfstate** file was deleted, Terraform considers the recent `t2.micro` > `t3.micro` update as a change outside of Terraform:\n\n***Objects have changed outside of Terraform.\nTerraform detected the following changes made outside of Terraform since the last \"terraform apply\"***",
+      "title": "Plan #2"
+    },
+    {
+      "directory": "ec2",
+      "description": "To sync the **terraform.tfstate** file with the actual AWS resource configurations, run the following command:\n\n>> terraform apply -refresh-only --auto-approve\n\nThis command will apply a refresh-only plan to update the Terraform state.",
+      "title": "Refresh State"
+    },
+    {
+      "file": "ec2/terraform.tfstate",
+      "description": "No actual resources have been updated as a result of the refresh, and the `instance_type` value for the EC2 Instance now matches the actual `t3.micro` value.",
+      "line": 61,
+      "title": "Recovered State"
+    },
+    {
+      "directory": "ec2",
+      "description": "The key takeaways to remember:\n\n- Terraform is declarative, infrastructure is described in the **terraform.tfstate** file. Terraform handles the resource provisioning to achieve the desired state depicted in this file.\n- The **terraform.tfstate** file represents the current infrastructure. It will become unusable if the configuration becomes inaccurate due to manually modifying the AWS resources instead of using Terraform.\n- Store the state file in a restricted location because it can contain sensitive information like passwords and keys.\n\nYou have successfully created, updated, and recovered a local Terraform state file. Return to the Cloud Academy Lab browser tab to complete the lab.",
+      "title": "Complete"
+    }
+  ]
+}
