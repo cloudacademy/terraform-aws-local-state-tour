@@ -104,7 +104,7 @@
     },
     {
       "directory": "ec2",
-      "description": "Run the `terraform plan` command again and observe the output.\n\nSince the original **terraform.tfstate** file was deleted, Terraform considers the recent `t2.micro` > `t3.micro` update as a change outside of Terraform:\n\n***Objects have changed outside of Terraform.\nTerraform detected the following changes made outside of Terraform since the last \"terraform apply\"***",
+      "description": "Run the `terraform plan` command again and observe the output.\n\nEven though the **terraform.tfstate** file depicts an `instance_type` of `t2.micro`, it isn't using that instance type in the deployed instance. \n\nThe state needs to be synced back up with the actual EC2 instance configuration.",
       "title": "Plan #2"
     },
     {
